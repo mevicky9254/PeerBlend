@@ -21,7 +21,25 @@ public class UserServiceImplementation implements UserService {
 		this.jwtTokenProvider=jwtTokenProvider;
 		
 	}
+	
+	@Override
+	public User registerUser(User user) throws UserException {
+		 return userRepository.save(user);
+	}
 
+
+	@Override
+	public User findUserByName(String name) throws UserException {
+		User user=userRepository.findByName(name);
+		
+		if(user !=null){
+			return user;
+		}
+		throw new UserException("user not found!");
+		
+	}
+
+	
 	@Override
 	public User findUserById(Long userId) throws UserException {
 		Optional<User> user=userRepository.findById(userId);
@@ -31,6 +49,7 @@ public class UserServiceImplementation implements UserService {
 		}
 		throw new UserException("user not found with id "+userId);
 	}
+	
 
 	@Override
 	public User findUserProfileByJwt(String jwt) throws UserException {
@@ -44,5 +63,7 @@ public class UserServiceImplementation implements UserService {
 		}
 		return user;
 	}
+
+	
 
 }
