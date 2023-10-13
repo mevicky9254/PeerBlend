@@ -59,6 +59,7 @@ public class User {
     
     @NotNull
     private String mobile;
+    
     @ElementCollection
     private List<String> skills= new ArrayList<>();
 
