@@ -30,7 +30,7 @@ public class UserServiceImplementation implements UserService {
 
 	@Override
 	public User findUserByName(String name) throws UserException {
-		User user=userRepository.findByName(name);
+		User user=userRepository.findByFirstName(name);
 		
 		if(user !=null){
 			return user;

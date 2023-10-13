@@ -35,7 +35,7 @@ public class ProjectSecurityConfig {
 				.addFilterBefore(new JWTTokenValidatorFilter(), BasicAuthenticationFilter.class)
 				.authorizeHttpRequests((requests) -> requests
 						.requestMatchers("/endpoint").hasRole("ADMIN") //put endpoint here only accessible for admin
-						.requestMatchers("/endpoint").hasAnyRole("USER", "ADMIN") // put enpoint here accessible for both user and admin
+						.requestMatchers("/users/**").hasAnyRole("USER", "ADMIN") // put enpoint here accessible for both user and admin
 						.requestMatchers("/auth/signin").authenticated()
 						.requestMatchers("/auth/signup", "/swagger-ui*/**", "/v3/api-docs/**")
 						.permitAll())
