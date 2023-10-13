@@ -13,23 +13,32 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
+import com.PEERBLEND.model.Peer;
+
 @ControllerAdvice
 public class GlobleException {
 	
 	@ExceptionHandler(UserException.class)
 	public ResponseEntity<ErrorDetails> UserExceptionHandler(UserException ue, WebRequest req){
-		
 		ErrorDetails err= new ErrorDetails(ue.getMessage(),req.getDescription(false),LocalDateTime.now());
-		
 		return new ResponseEntity<ErrorDetails>(err,HttpStatus.BAD_REQUEST);
 		
 	}
+	
+
+	@ExceptionHandler(PeerException.class)
+	public ResponseEntity<ErrorDetails> peerException(PeerException pe,WebRequest req){
+	 ErrorDetails err= new ErrorDetails(pe.getMessage(),req.getDescription(false),LocalDateTime.now());
+     return new ResponseEntity<ErrorDetails>(err,HttpStatus.BAD_REQUEST);
+	}
+	
 	
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<ErrorDetails> methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException me){
 		ErrorDetails err=new ErrorDetails(me.getBindingResult().getFieldError().getDefaultMessage(),"validation error",LocalDateTime.now());
 		return new ResponseEntity<ErrorDetails>(err,HttpStatus.BAD_REQUEST);
 	}
+	
 	
 	@ExceptionHandler(NoHandlerFoundException.class)
     public ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
@@ -42,7 +51,6 @@ public class GlobleException {
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ErrorDetails> otherExceptionHandler(Exception e, WebRequest req){
 		ErrorDetails error=new ErrorDetails(e.getMessage(),req.getDescription(false),LocalDateTime.now());
-		
 		return new ResponseEntity<ErrorDetails>(error,HttpStatus.ACCEPTED);
 	}
 

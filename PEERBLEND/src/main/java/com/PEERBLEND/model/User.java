@@ -47,10 +47,13 @@ public class User {
     private String password;
 
     @Email
+    @NotNull
     @Column(name = "email", unique = true)
+    private String email;
     
     @NotNull
-    private String email;
+    @Column(unique=true)
+    private String userName;
     
     private String role;
     
@@ -65,6 +68,9 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Match> addresses=new ArrayList<>();
 
+    @OneToMany
+    private List<Peer> peers=new ArrayList<>();
+    
     private LocalDateTime createdAt;
     
 }
