@@ -57,6 +57,8 @@ public class User {
     
     private String role;
     
+    private String profileImage;
+    
     @NotNull
     private String mobile;
     

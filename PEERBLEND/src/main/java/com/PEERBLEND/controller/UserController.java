@@ -11,9 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.PEERBLEND.config.JwtTokenProvider;
+import com.PEERBLEND.exception.UserException;
 import com.PEERBLEND.model.User;
 import com.PEERBLEND.model.UserDetailsDTO;
 import com.PEERBLEND.repository.UserRepository;
+import com.PEERBLEND.service.UserService;
 
 @RestController()
 @RequestMapping("/users")
@@ -22,56 +24,56 @@ public class UserController {
 	
 	private UserRepository userRepository;
 	
+	private UserService userService;
+	
+	
 	private JwtTokenProvider jwtProvider;
 	
-	public UserController(UserRepository userRepository, JwtTokenProvider jwtProvider) {
+	public UserController(UserRepository userRepository, JwtTokenProvider jwtProvider,UserService userService) {
 		super();
 		this.userRepository = userRepository;
 		this.jwtProvider = jwtProvider;
+		this.userService=userService;
 	}
+	
 	
 	@GetMapping("/hello")
 	public String getHello() {
 		return "hello ";
 	}
 	
+	
 	@GetMapping("/createConnection/{email2}")
-	 public ResponseEntity<String>connectPeer(@RequestHeader("Authorization") String jwt,@PathVariable String email2){
+	 public ResponseEntity<String>connectPeer(@RequestHeader("Authorization") String jwt,@PathVariable String email2) throws UserException{
 		 
 		 String email1=jwtProvider.getEmailFromJwtToken(jwt);
 		 
-		 User user1=userRepository.findByEmail(email1);
+		 String message=userService.createConnection(email1, email2);
 		 
-		 User user2=userRepository.findByEmail(email2);
-		 
-		 user1.getPeers().add(user2.getId());
-		 
-		 userRepository.save(user1);
-		 
-		 return new ResponseEntity<>("Connection created", HttpStatus.CREATED);
+		 return new ResponseEntity<>(message, HttpStatus.CREATED);
 	 }
 
+	
 	@GetMapping("/profile")
-	 public ResponseEntity<UserDetailsDTO> getProfile(@RequestHeader("Authorization") String jwt){
+	 public ResponseEntity<UserDetailsDTO> getProfile(@RequestHeader("Authorization") String jwt) throws UserException{
 		 
 		 String email=jwtProvider.getEmailFromJwtToken(jwt);
 		 
-		 User user=userRepository.findByEmail(email);
-		 
-		 List<Long> userids = user.getPeers();
-		 UserDetailsDTO userObject = new UserDetailsDTO();
-		 for(Long i : userids) {
-			 User users = userRepository.findById(i).get();
-			 userObject.getUsers().add(users);
-		 }
-		 userObject.setId(user.getId());
-		 userObject.setFirstName(user.getFirstName());
-		 userObject.setLastName(user.getLastName());
-		 userObject.setEmail(user.getEmail());
-		 userObject.setMobile(user.getMobile());
-		 userObject.setRole(user.getRole());
+		 UserDetailsDTO userObject=userService.getProfile(email);
+		
 		 return new ResponseEntity<>(userObject, HttpStatus.CREATED);
 	 }
+	
+	
+	@GetMapping("/peerDetails/{email}")
+	public ResponseEntity<UserDetailsDTO>getPeerDetails(@RequestHeader ("Authorization") String jwt,@PathVariable String email) throws UserException{
+		
+		UserDetailsDTO userObject=userService.getPeerDetails(email);
+		
+		 return new ResponseEntity<>(userObject, HttpStatus.OK);
+	    
+		
+	}
 
 	
 	

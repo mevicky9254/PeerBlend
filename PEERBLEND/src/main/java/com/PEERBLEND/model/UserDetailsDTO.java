@@ -9,9 +9,9 @@ import lombok.Data;
 public class UserDetailsDTO {
 	
 		private Long id;
+		
 	    private String firstName;
 	    
-	   
 	    private String lastName;
 
 	    private String email;
@@ -19,6 +19,8 @@ public class UserDetailsDTO {
 	    private String role;
 	    
 	    private String mobile;
+	    
+	    private String profileImage;
 	    
 	    private List<User> users = new ArrayList<>();
 }
